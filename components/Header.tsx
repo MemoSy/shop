@@ -12,30 +12,48 @@ import {
 } from "@heroicons/react/24/outline";
 
 const Header = ({ cartItems, addToCart, removeFromCart }: any) => {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
-  const [lastScrollY, setLastScrollY] = useState(0)
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
+      const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollY) {
-        setIsVisible(false)
+        setIsVisible(false);
       } else {
-        setIsVisible(true)
+        setIsVisible(true);
       }
 
-      setIsScrolled(currentScrollY > 50)
-      setLastScrollY(currentScrollY)
-    }
+      setIsScrolled(currentScrollY > 50);
+      setLastScrollY(currentScrollY);
+    };
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY])
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
-  const navItems = ['Home', 'Shop', 'About', 'Contact']
+  const navItems = ["Home", "Shop", "About", "Contact"];
+
+  const generateWhatsAppLink = () => {
+    const phoneNumber = "905342967813"; // Replace with your WhatsApp number
+    const message = cartItems
+      .map(
+        (item: any) =>
+          `${item.name} - Quantity: ${item.quantity} - Total: $${
+            item.price * item.quantity
+          }`
+      )
+      .join("\n");
+
+    const encodedMessage = encodeURIComponent(
+      `Hello, I would like to purchase the following items:\n${message}`
+    );
+
+    return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+  };
 
   const CartMenu = () => (
     <motion.div
@@ -88,9 +106,14 @@ const Header = ({ cartItems, addToCart, removeFromCart }: any) => {
               </div>
             </div>
           ))}
-          <button className="w-full bg-black text-white py-2 rounded-md mt-4">
+          <a
+            href={generateWhatsAppLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-black text-white py-2 rounded-md mt-4 text-center block"
+          >
             Complete Purchase
-          </button>
+          </a>
         </>
       )}
     </motion.div>
